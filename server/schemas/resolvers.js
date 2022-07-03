@@ -16,7 +16,7 @@ const resolvers = {
         throw new AuthenticationError('You are not logged in');
     },
     
-    user: async (parent, { username }) => {
+    User: async (parent, { username }) => {
         return User.findOne({ username })
         .select('-__v -password')
         .populate('savedBooks');
@@ -28,14 +28,14 @@ const resolvers = {
 },
 
 Mutation: {
-    createUser: async (parent, args) => {
+    createUser: async ({ body }, res) => {
         const user = await User.create(args);
         const token = signToken(user);
 
         return { token, user };
     },
-    login: async (parent, { email, password }) => {
-        const user = await User.findOne({ email });
+    login: async ({ body }, res) => {
+        const user = await User.findOne({ $or: [{ username: body.username }, { email: body.email }] });
 
         if (!user) {
             throw new AuthenticationError('Incorrect credentials');
@@ -51,7 +51,7 @@ Mutation: {
         return { token, user };
     },
     
-    saveBook: async (parent, { bookId }, context) => {
+    saveBook: async ({ user, body }, res) => {
     if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id },
@@ -65,7 +65,7 @@ Mutation: {
         throw new AuthenticationError('You need to be logged in to do that!')
     },
 
-    deleteBook: async (parent, { bookId }, context) => {
+    deleteBook: async ({ user, params }, res) => {
         if (context.user) {
             const updatedUser = await User.findOneAndUpdate(
                 { _id: context.user._id },
