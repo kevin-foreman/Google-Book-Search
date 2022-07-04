@@ -20,7 +20,7 @@ Simple application built with React and GraphQL to search for and save book sear
 To run locally, run npm install to install all the dependencies, then run npm run develop to run a local development server. To visit the live deployed version see the link below.
 
 ## Usage
-Simple use case scenarios for book lovers. See screenshot below. ![alt text](assets/images/screenshot.png) 
+Simple use case scenarios for book lovers. See screenshot below. 
 
 ## Contributors
 None
